@@ -29,3 +29,4 @@
 
 - [GitHub中文社区](https://www.githubs.cn/)
 - [pornhub图标生成](https://www.logoly.pro/#/)
+- [Simple Icons](https://simpleicons.org/)

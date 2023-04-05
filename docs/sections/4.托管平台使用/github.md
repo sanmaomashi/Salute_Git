@@ -2,37 +2,99 @@
 
 GitHub是一个代码托管平台，开发者可以在上面创建自己的代码仓库，并将代码上传到这些仓库中，以便与其他开发者进行协作、版本控制、代码共享和代码存档等操作。
 
-  ## 一、注册账户
+## 一、github配置免密登陆
+
+在使用Git与GitHub进行交互时，可能需要频繁输入GitHub的账号和密码进行身份验证，特别是在推送代码到远程仓库时。为了避免每次都输入密码，可以配置SSH免密登陆。以下是在GitHub上配置免密登陆的步骤：
+
+### 1. 查看本地SSH文件
+
+打开命令行终端,验证是否有ssh keys,看下返回的结果中是否已经存在了.pub结尾的文件
+
+```bash
+ls -alh ~/.ssh
+```
+
+如果有.pub结尾的文件直接打开，执行第四步复制到github上的SSH keys，如果没有就继续执行
+
+### 2. 生成SSH密钥
+
+在本地计算机上生成SSH密钥，可以使用以下命令：
+
+```shell
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+其中，"[your_email@example.com](mailto:your_email@example.com)"替换为自己的邮箱地址，根据提示输入密钥文件的名称和密码。
+
+这个时候在默认路径下就生成了两个文件，公钥和私钥。进入主目录下的.ssh文件夹，公钥为id_rsa.pub，私钥为id_rsa。
+
+### 3. 复制公钥内容
+
+执行以下命令查看公钥内容，打开id_rsa.pub文件，复制此内容
+
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+
+### 4. 添加SSH密钥
+
+将公钥添加到GitHub账号上，可以在GitHub账号的设置界面中进行配置。打开GitHub官网，进入Settings -> SSH and GPG keys界面，点击New SSH key按钮，将公钥添加到SSH key文本框中，并设置一个名称。然后点击Add SSH key按钮，保存设置。
+
+### 5. 测试SSH连接
+
+在命令行中输入以下命令测试SSH连接：
+
+```shell
+ssh -T git@github.com
+```
+
+其中，"github.com"可以替换成其他远程服务器的主机名或IP地址。如果SSH连接成功，则会提示"Hi username! You've successfully authenticated, but GitHub does not provide shell access."，其中"username"是自己的用户名。
+
+### 6. 配置Git
+
+在命令行中输入以下命令配置Git使用SSH协议：
+
+```shell
+git config --global core.sshCommand "ssh -i ~/.ssh/id_rsa"
+```
+
+其中，"~/.ssh/id_rsa"替换成自己的私钥文件路径。配置完成后，Git将使用指定的私钥进行身份验证。
+
+至此，SSH协议的配置就完成了。可以使用Git与远程服务器进行交互，并享受更高的安全性和稳定性。
+
+  ## 二、github使用
+
+  ### 1. 注册账户
 
 首先我们来到[GitHub](https://github.com/)的官网，点击右上角的sign up注册（sign in是登录），创建一个GitHub账户。
 
 输入用户名、邮箱及密码等信息，并完成验证过程，加入GitHub即可。
 
-  ## 二、创建仓库
+  ### 2. 创建仓库
 
 注册github账户，登录后，点击"New respository "，在新页面中，输入项目的名称，选择自己仓库的相关配置。
 
 > 页面配置说明
 
-### 1. `Repository name`
+#### 2.1  `Repository name`
 
 输入框输入自己仓库的名字，建议填写一个与项目相关的名字，系统会自动检测名称是否重复。
 
-### 2. `Descriptioin（optional）`
+#### 2.2 `Descriptioin（optional）`
 
 对创建仓库的描述，当然，这个可以选填。
 
-### 3. `Public && Private`
+#### 2.3  `Public && Private`
 
 Public即为公众的，选了Public即代表你的仓库代码为公开的，仓库内的所有内容都会被公开。
 
 Private即为私有的，选了Private即代表你的仓库为私密的，当然你选了这个也可以自己设置访问权限。相比Public多了一些功能，并且是收费的。如果只是自己的练习或者不重要的信息，当然我们没必要去选择付费的这一项。
 
-### 4. `Initialize this repository with --- ADD a README file`
+#### 2.4  `Initialize this repository with --- ADD a README file`
 
 如果勾选了这个选项，那么它就代表着GitHub会自动初始化仓库并且设置README文件，可以让你立刻clone这个仓库。clone意思就是本地没有repository（仓库）时，将远程repository（仓库）整个下载过来。如果不勾选它，那么，你可以手动push。将已经有的Git仓库添加到GitHub。
 
-### 5. `Initialize this repository with --- Add .gitignore`
+#### 2.5  `Initialize this repository with --- Add .gitignore`
 
 在使用git作版本控制时，git会默认把git控制的文件夹里面的所有文件都加入到版本控制。但是在实践中，我们经常会遇到不想某些文件或文件夹被git追踪的情况。比如logs文件、代码构建过程中产生的一些列文件，要解决这种问题,通常情况下我们需要创建一个文件格式后缀名为.gitignore的文件，来控制那些文件不被git追踪。
 
@@ -40,17 +102,17 @@ Private即为私有的，选了Private即代表你的仓库为私密的，当然
 
 下拉菜单中有多种语言及框架，看你的需要进行选择。
 
-### 6. `Initialize this repository with --- Choose a license`
+#### 2.6 `Initialize this repository with --- Choose a license`
 
 这个下拉菜单意思是给你的代码仓库添加一个许可证，你可以根据需求进行选择。比如我添加一个开源许可证，当别人浏览我的代码仓库时，别人也可以进行修改我仓库中的项目。
 
 随后会生成包含许可协议内容的LICENSE文件，用来表明你的仓库内容的许可协议。
 
-### 7. Create repository
+#### 2.7  Create repository
 
 添加成功后，点击Create repository按钮，即完成仓库的创建，并转到文件列表页面。
 
-## 三、删除仓库
+### 3. 删除仓库
 
 如果你需要删除GitHub上的某个仓库，可以按照以下步骤进行操作：
 
@@ -64,7 +126,7 @@ Private即为私有的，选了Private即代表你的仓库为私密的，当然
 
 另外，如果你是仓库的拥有者，还可以将仓库转移给其他用户或者组织，以便他们继续维护该仓库。
 
-## 四、删除某个文件夹
+### 4. 删除某个文件夹
 
 要从GitHub仓库中删除一个文件夹，可以按照以下步骤进行操作：
 
@@ -76,7 +138,7 @@ Private即为私有的，选了Private即代表你的仓库为私密的，当然
 
 需要注意的是，删除文件夹也是不可逆的操作，删除之前请务必确认你要删除的文件夹是正确的，并且已经备份了所有需要保留的文件。另外，删除文件夹可能会影响到该文件夹下面的所有文件，如果不确定是否需要删除，请谨慎考虑。
 
-  ## 五、下载项目
+  ### 5. 下载项目
 
 要下载GitHub上的一个项目，可以按照以下步骤进行操作：
 
@@ -96,33 +158,7 @@ Private即为私有的，选了Private即代表你的仓库为私密的，当然
 
 通过以上方法，你可以很方便地从GitHub上下载任何你需要的开源项目或代码仓库。
 
-## 六、更改远程跟踪链接
-
-当一个项目拉下来，只是想看看的时候，都是用 HTTP 的方式 clone，但当自己想修改了，改完了需要推送到其他地址，就需要修改远程跟踪链接。
-
-- 打开终端
-- 将当前的工作目录/项目更改为本地项目
-
-- 查看当前 Git 跟踪情况
-
-```bash
-git remote -v
-> origin  https://github.com/user/repo.git (fetch)
-> origin  https://github.com/user/repo.git (push)
-```
-
-- 设置远程跟踪链接
-
-```bash
-git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
-git remote set-url origin https://github.com/Nicolas-gaofeng/Salute_Operation_System.git
-```
-
-然后再查看跟踪情况，会发现改为了设置的远程地址，此时再推送即可。
-
-需要注意的是，更改远程跟踪链接将会影响到所有本地分支与该远程仓库的关联。如果不确定操作，请谨慎考虑，并确保备份所有数据。
-
-## 七、githubpages
+## 三、githubpages
 
 GitHub Pages是GitHub提供的一项免费服务，允许用户将自己的网站或静态页面托管在GitHub上，并通过特定的URL地址进行访问。以下是使用GitHub Pages的一些步骤：
 
@@ -134,9 +170,7 @@ GitHub Pages是GitHub提供的一项免费服务，允许用户将自己的网�
 
 总之，GitHub Pages是一个非常方便的托管静态网站和页面的服务，使用起来也比较简单。如果你需要搭建一个简单的个人网站或者展示静态页面，可以尝试使用GitHub Pages来实现。
 
-## 八、探索
-
-### 1. 如何写属于自己的 license（软件协议）？
+## 四、如何写属于自己的 license（软件协议）？
 
  **（1）最为方便的license创建方式：**
 

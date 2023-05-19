@@ -4,6 +4,8 @@
 
 ?> Git 学习笔记
 
+
+
 ## 目录
 
 * [首页](README.md)
@@ -25,7 +27,7 @@
 
 
 
-## 资源
+## awesome
 
 - [GitHub中文社区](https://www.githubs.cn/)
 - [pornhub图标生成](https://www.logoly.pro/#/)
